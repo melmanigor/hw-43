@@ -1,0 +1,30 @@
+{% extends 'layout.html' %}
+{% block title %}Clothing Items{% endblock %}
+{% block content %}
+<div class="container mt-4 text-center">
+  <h1 class="mb-4">Clothing Items</h1>
+
+  <!-- Filter Buttons -->
+  <div class="mb-4">
+    <a href="{% url 'product_list' %}" class="btn {% if not selected_type %}btn-primary{% else %}btn-outline-primary{% endif %} m-1">
+      All
+    </a>
+    {% for type in types %}
+      <a href="?type={{ type.id }}" class="btn {% if selected_type == type.id %}btn-primary{% else %}btn-outline-primary{% endif %} m-1">
+        {{ type.name }}
+      </a>
+    {% endfor %}
+  </div>
+
+  <!-- Clothing List -->
+  <ul class="list-group">
+    {% for item in clothes %}
+      <li class="list-group-item">
+        {{ item.name }} - {{ item.manufacturer }} - ${{ item.price }}
+      </li>
+    {% empty %}
+      <li class="list-group-item">No items found for this type.</li>
+    {% endfor %}
+  </ul>
+</div>
+{% endblock %}

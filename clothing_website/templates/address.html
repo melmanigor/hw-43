@@ -1,0 +1,13 @@
+{%extends 'layout.html'%}
+{%load static%}
+{%block title%} Address {%endblock%}
+{%block content%}
+<div class="header">
+    <div class="container d-flex flex-column justify-content-center align-items-center text-center min-vh-100">
+        <div class="bg-dark bg-opacity-75 p-5 rounded text-white">
+            <h1 class="display-4 mb-4">Our store address:</h1>
+            <h2 class="fw-bold">TEL AVIV, Izhak Sade 345</h2>
+            <a href="{% url 'home' %}" class="btn btn-light mt-4">Back home</a>
+        </div>
+    </div>
+    {% endblock %}
