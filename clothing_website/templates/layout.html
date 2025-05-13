@@ -9,20 +9,32 @@
 </head>
 <body class="{% block body_class %}{% endblock %} m-0 p-0">
 
-<!-- Navbar קבוע בראש -->
+
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark px-4"
      style="position: fixed; top: 0; width: 100%; z-index: 1000;">
   <a class="navbar-brand fw-bold text-white" href="{% url 'home' %}">Clothing Store</a>
   <div class="collapse navbar-collapse">
     <ul class="navbar-nav ms-auto">
-      <li class="nav-item"><a class="nav-link text-white" href="{% url 'home' %}">Home</a></li>
-      <li class="nav-item"><a class="nav-link text-white" href="{% url 'address' %}">Address</a></li>
-      <li class="nav-item"><a class="nav-link text-white" href="{% url 'product_list' %}">Clothing</a></li>
+      <li class="nav-item">
+        <a class="nav-link text-white {% if request.path == '/' %}active{% endif %}" href="{% url 'home' %}">Home</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link text-white {% if request.path == '/address/' %}active{% endif %}" href="{% url 'address' %}">Address</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link text-white {% if request.path == '/clothing/' %}active{% endif %}" href="{% url 'product_list' %}">Clothing</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link text-white {% if request.path == '/clothing/search/' %}active{% endif %}" href="{% url 'clothing_search' %}">Search</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link text-white {% if request.path == '/clothing/add/' %}active{% endif %}" href="{% url 'add_clothing' %}">Add Clothing</a>
+      </li>
     </ul>
   </div>
 </nav>
 
-<!-- תוכן הדף -->
+
 <main class="container-fluid p-4" style="padding-top: 80px;">
   {% block content %}{% endblock %}
 </main>
