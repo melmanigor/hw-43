@@ -1,0 +1,29 @@
+{% extends 'layout.html' %}
+
+{% block title %}Reviews for {{ clothing.name }}{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="mb-4">Reviews for {{ clothing.name }}</h2>
+
+    <div class="mb-3">
+        <a href="{% url 'product_list' %}" class="btn btn-secondary btn-sm">Back to Product List</a>
+        <a href="{% url 'add_review' clothing.pk %}" class="btn btn-success btn-sm">Add Review</a>
+    </div>
+
+    {% if reviews %}
+        <ul class="list-group">
+            {% for review in reviews %}
+                <li class="list-group-item">
+                    <p class="mb-1"><strong>Comment:</strong> {{ review.comment }}</p>
+                    <small class="text-muted">Rating: {{ review.rating }} / 5</small>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <div class="alert alert-info text-center mt-4">
+            <p class="mb-2">No reviews available for this clothing.</p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,4 +1,4 @@
-from django.shortcuts import render,redirect
+from django.shortcuts import render,redirect,get_object_or_404
 from.models import ClothingModel, TypeModel
 from .forms import ClothingForm, ClothingCreateForm
 
@@ -42,3 +42,7 @@ def add_clothing(request):
     else:
         form = ClothingCreateForm()
     return render(request, 'clothing/add_clothing.html', {'form': form})
+
+def clothing_detail(request,pk):
+    item=get_object_or_404(ClothingModel,pk=pk)
+    return render(request,'clothing/clothing_detail.html',{'item':item})

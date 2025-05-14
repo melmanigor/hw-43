@@ -1,0 +1,23 @@
+{% extends 'layout.html' %}
+
+{% block title %}Add Review{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="mb-4">Add Review for {{ clothing.name }}</h2>
+    <form method="post">
+        {% csrf_token %}
+        <div class="mb-3">
+
+            {{ form.rating.label_tag }}
+            {{ form.rating }}
+        </div>
+        <div class="mb-3">
+            {{ form.comment.label_tag }}
+            {{ form.comment }}
+        </div>
+        <button type="submit" class="btn btn-primary">Submit Review</button>
+        <a href="{% url 'clothing_reviews' pk=clothing.pk %}" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+{% endblock %}  
