@@ -6,4 +6,5 @@ class ReviewModel(models.Model):
     rating = models.IntegerField()
     comment = models.TextField()
     def __str__(self):
+
         return f"{self.rating} - {self.comment}"

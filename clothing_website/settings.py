@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'clothing_website',
     'clothing',
     'reviews',
+    'workers',
 ]
 
 MIDDLEWARE = [

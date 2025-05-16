@@ -1,6 +1,7 @@
 from django.shortcuts import render,redirect,get_object_or_404
 from.models import ClothingModel, TypeModel
 from .forms import ClothingForm, ClothingCreateForm
+from django.contrib import messages
 
 # Create your views here.
 def product_list(request):
@@ -46,3 +47,23 @@ def add_clothing(request):
 def clothing_detail(request,pk):
     item=get_object_or_404(ClothingModel,pk=pk)
     return render(request,'clothing/clothing_detail.html',{'item':item})
+def update_clothing(request,pk):
+    item=get_object_or_404(ClothingModel,pk=pk)
+
+    if request.method=='POST':
+        form=ClothingCreateForm(request.POST,instance=item)
+
+        if form.is_valid():
+            form.save()
+            return redirect('product_list')
+    else:
+        form=ClothingCreateForm(instance=item)
+    return render(request,'clothing/update_clothing.html',{'form':form,'item':item})
+
+def delete_clothing(request,pk):
+    item=get_object_or_404(ClothingModel,pk=pk)
+    if request.method=='POST':
+        item.delete()
+        messages.success(request,'Item deleted successfully')
+        return redirect('product_list')
+    return render(request,'clothing/delete_clothing.html',{'item':item})
