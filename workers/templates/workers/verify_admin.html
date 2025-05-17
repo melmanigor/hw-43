@@ -1,0 +1,20 @@
+{% extends 'layout.html' %}
+{% block title %}Verify Admin{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-center align-items-center" style="min-height: 70vh;">
+    <div class="card p-4 shadow" style="width: 400px;">
+        <h3 class="text-center mb-4">Verify Administrator</h3>
+
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <div class="d-flex justify-content-between mt-3">
+                 <input type="hidden" name="next" value="{{ next }}">
+                <button type="submit" class="btn btn-primary">Verify</button>
+                <a href="{% url 'worker_list' %}" class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
