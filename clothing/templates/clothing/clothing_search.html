@@ -17,7 +17,11 @@
       </div>
       <div class="col-auto">
         <button type="submit" class="btn btn-primary">Search</button>
+      {% if not form.is_bound %}
+        <a href="{% url 'product_list' %}" class="btn btn-secondary">Cancel</a>
+      {% endif %}
       </div>
+
     </div>
   </form>
 
@@ -39,6 +43,11 @@
     </ul>
   {% elif form.is_bound %}
     <p class="text-muted mt-4">No matching items found.</p>
+  {% endif %}
+  {% if form.is_bound %}
+  <div class="mt-4">
+  <a href="{% url 'product_list' %}" class="btn btn-secondary">Back to Product List</a>
+</div>
   {% endif %}
 </div>
 {% endblock %}
