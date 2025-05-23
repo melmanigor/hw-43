@@ -1,0 +1,20 @@
+{% extends 'layout.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Sign Up{% endblock %}
+
+{% block content %}
+<div class="container mt-5" style="max-width:600 px ;">
+    <div class="card shadow-lg">
+        <div class="card-body">
+  <h2 class="mb-4">Sign Up</h2>
+
+
+  <form method="post">
+    {% csrf_token %}
+    {% crispy form %}
+  </form>
+</div>
+</div>
+</div>
+{% endblock %}

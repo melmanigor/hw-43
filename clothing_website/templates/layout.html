@@ -4,54 +4,74 @@
 <head>
   <meta charset="UTF-8">
   <title>{% block title %}Clothing Website{% endblock %}</title>
+
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 <body class="{% block body_class %}{% endblock %} m-0 p-0">
 
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark px-4"
+       style="position: fixed; top: 0; width: 100%; z-index: 1000;">
+    <a class="navbar-brand fw-bold text-white" href="{% url 'home' %}">Clothing Store</a>
+    <div class="collapse navbar-collapse">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item">
+          <a class="nav-link text-white {% if request.path == '/' %}active{% endif %}" href="{% url 'home' %}">Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-white {% if request.path == '/address/' %}active{% endif %}" href="{% url 'address' %}">Address</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-white {% if request.path == '/clothing/' %}active{% endif %}" href="{% url 'product_list' %}">Clothing</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-white {% if request.path == '/clothing/search/' %}active{% endif %}" href="{% url 'clothing_search' %}">Search</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-white {% if request.path == '/clothing/add/' %}active{% endif %}" href="{% url 'add_clothing' %}">Add Clothing</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-white {% if request.path == '/workers/' %}active{% endif %}" href="{% url 'worker_list' %}">Workers</a>
+        </li>
 
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark px-4"
-     style="position: fixed; top: 0; width: 100%; z-index: 1000;">
-  <a class="navbar-brand fw-bold text-white" href="{% url 'home' %}">Clothing Store</a>
-  <div class="collapse navbar-collapse">
-    <ul class="navbar-nav ms-auto">
-      <li class="nav-item">
-        <a class="nav-link text-white {% if request.path == '/' %}active{% endif %}" href="{% url 'home' %}">Home</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link text-white {% if request.path == '/address/' %}active{% endif %}" href="{% url 'address' %}">Address</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link text-white {% if request.path == '/clothing/' %}active{% endif %}" href="{% url 'product_list' %}">Clothing</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link text-white {% if request.path == '/clothing/search/' %}active{% endif %}" href="{% url 'clothing_search' %}">Search</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link text-white {% if request.path == '/clothing/add/' %}active{% endif %}" href="{% url 'add_clothing' %}">Add Clothing</a>
-      </li>
-
-      <li class="nav-item">
-        <a class="nav-link text-white {% if request.path == '/workers/' %}active{% endif %}" href="{% url 'worker_list' %}">Workers</a>
-      </li>
-    </ul>
-  </div>
-</nav>
-
-
-<main class="container-fluid p-4" style="padding-top: 80px;">
-{% if messages %}
-    <div class="d-flex justify-content-center" style="margin-top: 100px;">
-      {% for message in messages %}
-        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-          {{ message }}
-          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-      {% endfor %}
+        {% if request.user.is_authenticated %}
+          <li class="nav-item d-flex align-items-center ms-3">
+            <span class="text-white fw-bold me-2" style="padding-top: 3px;">
+              Hello, <strong>{{ request.user.username }}</strong>
+            </span>
+            <a class="btn btn-outline-light btn-sm" href="{% url 'logout' %}">Logout</a>
+          </li>
+        {% else %}
+          <li class="nav-item">
+            <a class="nav-link text-white {% if request.path == '/accounts/login/' %}active{% endif %}" href="{% url 'login' %}">Login</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-white {% if request.path == '/accounts/signup/' %}active{% endif %}" href="{% url 'signup' %}">Sign Up</a>
+          </li>
+        {% endif %}
+      </ul>
     </div>
-  {% endif %}
-  {% block content %}{% endblock %}
-</main>
+  </nav>
 
+ 
+  <main class="container" style="padding-top: 100px;">
+
+    {% if messages %}
+      <div class="mt-3">
+        {% for message in messages %}
+          <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+       {% block content %}{% endblock %}
+  </main>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
-</html>
+</html

@@ -3,6 +3,9 @@ from django.contrib import messages
 from django.http import HttpResponseForbidden
 from .models import PositionModel,WorkerModel
 from .forms import WorkerForm, AdminVerifyForm
+from django.views.generic import ListView, CreateView, UpdateView, DeleteView, DetailView, FormView
+from django.urls import reverse_lazy
+from django.contrib.auth.mixins import LoginRequiredMixin
 # Create your views here.
 def is_verified_admin(request):
     email=request.session.get('verified_admin_email')
@@ -26,64 +29,66 @@ def verify_admin(request):
         form=AdminVerifyForm()
     return render(request, 'workers/verify_admin.html', {'form':form, 'next': next_url})
 
-def worker_list(request):
-    position_id=request.GET.get('position')
-
-    if position_id:
-        workers=WorkerModel.objects.filter(position_id=position_id)
-    else:
-        workers=WorkerModel.objects.all()
-
-    positions=PositionModel.objects.all()
-
-    return render(request, 'workers/workers_list.html',{
-        'workers':workers,
-        'positions':positions,
-        'selected_position':int(position_id) if position_id else None
-                                
-    })
-def add_worker(request):
-    if not is_verified_admin(request):
-        return HttpResponseForbidden("Only admin can access this page")
-    if request.method=='POST':
-        form=WorkerForm(request.POST,request.FILES)
-        if form.is_valid():
-            form.save()
-            del request.session['verified_admin_email']
-            return redirect('worker_list')
-    else:
-        form=WorkerForm()
-    return render(request, 'workers/add_worker.html', {'form':form})
-def update_worker(request,pk):
-    if  not is_verified_admin(request):
-        return HttpResponseForbidden("Only admin can access this page")
-
-    item=get_object_or_404(WorkerModel,pk=pk)
+class WorkerListView(LoginRequiredMixin,ListView):
+    model = WorkerModel
+    template_name = 'workers/workers_list.html'
+    context_object_name = 'workers'
+    login_url='login'
     
 
-    if request.method=='POST':
-        form=WorkerForm(request.POST,request.FILES,instance=item)
+    def get_queryset(self):
+        position_id = self.request.GET.get('position')
+        if position_id:
+            return WorkerModel.objects.filter(position_id=position_id)
+        return WorkerModel.objects.all()
 
-        if form.is_valid():
-            form.save()
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['positions'] = PositionModel.objects.all()
+        context['selected_position'] = int(self.request.GET.get('position')) if self.request.GET.get('position') else None
+        return context   
+class AddWorkerView(CreateView):
+    model = WorkerModel
+    form_class = WorkerForm
+    template_name = 'workers/add_worker.html'
+    success_url = reverse_lazy('worker_list')
+
+    def dispatch(self, request, *args, **kwargs):
+        if not is_verified_admin(request):
+            return HttpResponseForbidden("Only admin can access this page")
+        return super().dispatch(request, *args, **kwargs)  
+    def form_valid(self, form):
+        messages.success(self.request, 'Worker  added successfully')
+        return super().form_valid(form)
+
+      
+class UpdateWorkerView(UpdateView):
+    model = WorkerModel
+    form_class = WorkerForm
+    template_name = 'workers/update_worker.html'
+    success_url = reverse_lazy('worker_list')
+
+    def dispatch(self, request, *args, **kwargs):
+        if not is_verified_admin(request):
+            return HttpResponseForbidden("Only admin can access this page")
+        return super().dispatch(request, *args, **kwargs)
+
+class WorkerDeleteView(DeleteView):
+    model = WorkerModel
+    template_name = 'workers/delete_worker.html'
+    success_url = reverse_lazy('worker_list')
+    context_object_name = 'worker'
+
+    def dispatch(self, request, *args, **kwargs):
+        if not is_verified_admin(request):
+            return HttpResponseForbidden("Only admin can access this page")
+        self.object = self.get_object()
+        admin_email = request.session.get('verified_admin_email')
+        if self.object.email == admin_email:
+            messages.error(request, "You can't delete Administrator")
             return redirect('worker_list')
-    else:
-        form=WorkerForm(instance=item)
-    return render(request,'workers/update_worker.html',{
-        'form':form,
-        'item':item
-        })
-def delete_worker(request,pk):
-    if not is_verified_admin(request):
-        return HttpResponseForbidden("Only admin can access this page")
-    item=get_object_or_404(WorkerModel,pk=pk)
-    admin=request.session.get('verified_admin_email')
-    if item.email==admin:
-        messages.error(request,"You can't delete Administrator")
-        return redirect('worker_list')
-    if request.method=='POST':
-        item.delete()
-        messages.success(request,'Item deleted successfully')
-        return redirect('worker_list')
-    return render(request,'workers/delete_worker.html',{'worker':item})
+        return super().dispatch(request, *args, **kwargs)
 
+    def delete(self, request, *args, **kwargs):
+        messages.success(self.request, 'Worker deleted successfully')
+        return super().delete(request, *args, **kwargs)
