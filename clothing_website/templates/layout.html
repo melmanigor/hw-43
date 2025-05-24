@@ -50,6 +50,12 @@
             <a class="nav-link text-white {% if request.path == '/accounts/signup/' %}active{% endif %}" href="{% url 'signup' %}">Sign Up</a>
           </li>
         {% endif %}
+        {% if request.user.is_superuser %}
+  <li class="nav-item">
+    <a class="nav-link text-warning fw-bold" href="{% url 'admin_user_list' %}">User Admin</a>
+  </li>
+{% endif %}
+
       </ul>
     </div>
   </nav>

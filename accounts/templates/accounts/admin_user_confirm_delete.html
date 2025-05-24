@@ -1,0 +1,9 @@
+{% extends 'layout.html' %}
+{% block title %}Confirm Deletion{% endblock %}
+{% block content %}
+<h3>Are you sure you want to delete user "{{ user_to_delete.username }}"?</h3>
+<form method="post">{% csrf_token %}
+    <button type="submit" class="btn btn-danger">Yes, delete</button>
+    <a href="{% url 'admin_user_list' %}" class="btn btn-secondary">Cancel</a>
+</form>
+{% endblock %}

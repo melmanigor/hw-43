@@ -7,7 +7,8 @@ from .forms import UserRegisterForm
 from django.contrib.auth.forms import AuthenticationForm
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView, DetailView, FormView
 from django.contrib.messages.views import SuccessMessageMixin
-
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.contrib.auth.models import User
 # Create your views here.
 class SignupView(SuccessMessageMixin,CreateView):
     form_class = UserRegisterForm
@@ -72,3 +73,31 @@ class LogoutView(LogoutView):
 #     messages.success(request, "You have been logged out.")
 #     messages.success(request, 'Logged out successfully')
 #     return redirect('home')
+class AdminUserCreateView(LoginRequiredMixin,UserPassesTestMixin,CreateView):
+    model = User
+    form_class = UserRegisterForm
+    template_name = 'accounts/admin_user_create.html'
+    success_url = reverse_lazy('admin_user_list')
+    def test_func(self):
+        return self.request.user.is_superuser
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        messages.success(self.request, f"User '{form.instance.username}' created successfully")
+        return response
+class AdminUserView(LoginRequiredMixin,UserPassesTestMixin, ListView):
+    model = User
+    template_name = 'accounts/admin_user_list.html'
+    context_object_name = 'users'
+    def test_func(self):
+        return self.request.user.is_superuser
+class AdminUserDeleteView(LoginRequiredMixin,UserPassesTestMixin,DeleteView):
+    model = User
+    template_name = 'accounts/admin_user_confirm_delete.html'
+    success_url = reverse_lazy('admin_user_list')
+    context_object_name = 'user_to_delete'
+    def test_func(self):
+        return self.request.user.is_superuser
+    def post(self, request, *args, **kwargs):
+        messages.success(self.request, 'User deleted successfully')
+        return super().post(request, *args, **kwargs)
+    

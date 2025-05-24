@@ -25,10 +25,13 @@ class UserRegisterForm(UserCreationForm):
                 'last_name',
                 'email',
                 'password1',
-                'password2'
+                'password2',
+                
             ),
             ButtonHolder(
                 Submit('submit', 'Save', css_class='btn btn-success'),
                 Button('cancel', 'Cancel', css_class='btn btn-secondary', onclick="window.location.href='/'")
             )
         )
+
+
