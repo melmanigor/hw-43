@@ -5,6 +5,7 @@ from .forms import ClothingForm, ClothingCreateForm
 from django.contrib import messages
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView, DetailView, FormView
 from django.urls import reverse_lazy
+import requests
 # Create your views here.
 class ClothingListView(ListView):
     model = ClothingModel
@@ -16,6 +17,7 @@ class ClothingListView(ListView):
         if type_id:
             queryset = queryset.filter(type_id=type_id)
         return queryset
+    
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -93,4 +95,16 @@ class ClothingDeleteView(DeleteView):
         messages.success(self.request, 'Item deleted successfully')
         print('Item deleted successfully')
         return super().form_valid(form)
-    
+def coming_soon(request):
+    url = 'https://dummyjson.com/products/category/mens-shirts'
+    try:
+        response = requests.get(url)
+        response.raise_for_status()
+        data = response.json()
+        products = data.get('products', [])
+    except requests.exceptions.RequestException as e:
+        products = []
+        print(f"Error fetching data: {e}")
+
+    return render(request, 'clothing/coming_soon.html', {'products': products})
+
