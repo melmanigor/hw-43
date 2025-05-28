@@ -5,7 +5,7 @@ from .forms import ClothingForm, ClothingCreateForm
 from django.contrib import messages
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView, DetailView, FormView
 from django.urls import reverse_lazy
-import requests
+
 # Create your views here.
 class ClothingListView(ListView):
     model = ClothingModel

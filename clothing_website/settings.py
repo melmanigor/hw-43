@@ -46,6 +46,8 @@ INSTALLED_APPS = [
     'crispy_bootstrap5',
     'accounts',
     'api',
+    'rest_framework',
+    'api_framework',
   
 ]
 
